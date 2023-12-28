@@ -1,0 +1,79 @@
+{
+    "name": "coderagent",
+    "displayName": "CodeRAGent",
+    "description": "Retrieval-Augmented Code Generation with custom docs with GPT-3.5/4",
+    "version": "0.0.1",
+    "publisher": "brannt",
+    "engines": {
+        "vscode": "^1.76.0"
+    },
+    "activationEvents": [],
+    "main": "./out/extension.cjs",
+    "contributes": {
+        "commands": [
+            {
+                "command": "coderagent.addDocumentationSource",
+                "title": "CodeRAGent: Add Documentation Source"
+            },
+            {
+                "command": "coderagent.deleteDocumentationSource",
+                "title": "CodeRAGent: Delete Documentation Source"
+            },
+            {
+                "command": "coderagent.generateCode",
+                "title": "CodeRAGent: Generate Code"
+            },
+            {
+                "command": "coderagent.answerQuestion",
+                "title": "CodeRAGent: Answer Question"
+            },
+            {
+                "command": "coderagent.manageDatabase",
+                "title": "CodeRAGent: Manage Database"
+            },
+            {
+                "command": "coderagent.setOpenAIKey",
+                "title": "CodeRAGent: Set OpenAI Key"
+            },
+            {
+                "command": "coderagent.DEBUG",
+                "title": "CodeRAGent: DEBUG"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.1.0",
+        "@types/html-to-text": "^9.0.4",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^18.16",
+        "@types/vscode": "^1.76.0",
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
+        "@vscode/test-cli": "^0.0.4",
+        "@vscode/test-electron": "^2.3.8",
+        "eslint": "^8.56.0",
+        "mocha": "^10.2.0",
+        "node-llama-cpp": "^2.8.3",
+        "typescript": "~5.1.6"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "faiss-node": "^0.5.1",
+        "html-to-text": "^9.0.5",
+        "jsdom": "^23.0.1",
+        "langchain": "0.0.209",
+        "pdf-parse": "^1.1.1",
+        "pickleparser": "^0.2.1"
+    },
+    "overrides": {
+        "@langchain/core": "0.1.2"
+    }
+}

@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+dist/
+
+# TypeScript
+*.tsbuildinfo
+out/
+
+# Visual Studio Code
+.vscode/
+.vs/
+.vscode-test/
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Local files
+.env
+data/
+
+# GPT Engineer (in case you need it)
+.gpteng
+prompt
+
