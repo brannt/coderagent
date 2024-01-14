@@ -26,7 +26,7 @@ suite("Extension Test Suite", async () => {
     const { DocumentationManager } = await import(
       "../../documentationManager.mjs"
     );
-    const docStore = new DocumentationStore(vscode.Uri.parse("file:///tmp/"));
+    const docStore = new DocumentationStore("file:///tmp/");
     const docManager = new DocumentationManager(docStore);
     await docManager.addSource(
       "Directory",

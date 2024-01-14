@@ -24,7 +24,7 @@ export class GPTIntegration {
     private async invokeChain(template: string, retriever: BaseRetriever, query: string): Promise<string> {
         const model = new ChatOpenAI({temperature: 0, callbacks: [new ConsoleCallbackHandler()]});
         const messages = [
-            SystemMessagePromptTemplate.fromTemplate(GENERATE_TEMPLATE),
+            SystemMessagePromptTemplate.fromTemplate(template),
             HumanMessagePromptTemplate.fromTemplate('{query}')
         ];
         const prompt = ChatPromptTemplate.fromMessages(messages);

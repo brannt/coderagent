@@ -1,4 +1,5 @@
 {
+	"exclude": ["debug-panel/**/*", "node_modules/**/*"],
 	"compilerOptions": {
 		"module": "Node16",
 		"target": "ES2022",

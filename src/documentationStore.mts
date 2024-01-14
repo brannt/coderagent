@@ -3,14 +3,13 @@ import { EmbeddingsInterface } from "langchain/embeddings/base";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { SaveableVectorStore, VectorStoreRetriever } from "langchain/vectorstores/base";
 import { FaissStore } from "langchain/vectorstores/faiss";
-import { Uri } from "vscode";
 
 export class DocumentationStore {
   private vecStore: SaveableVectorStore | null = null;
   private vecStoreClass: typeof SaveableVectorStore = FaissStore;
   private embeddings: EmbeddingsInterface;
   retrieverParams: Record<string, any> = {};
-  constructor(private storagePath: Uri, embeddings?: EmbeddingsInterface) {
+  constructor(private storagePath: string, embeddings?: EmbeddingsInterface) {
     this.storagePath = storagePath;
     this.embeddings = embeddings ?? new OpenAIEmbeddings();
   }
@@ -43,10 +42,10 @@ export class DocumentationStore {
     if (!this.vecStore) {
       throw new Error("Vector store is not initialized. Please call addDocuments first.");
     }
-    await this.vecStore.save(this.storagePath.fsPath);
+    await this.vecStore.save(this.storagePath);
   }
 
   async load(): Promise<void> {
-    this.vecStore = await this.vecStoreClass.load(this.storagePath.fsPath, this.embeddings);
+    this.vecStore = await this.vecStoreClass.load(this.storagePath, this.embeddings);
   }
 }

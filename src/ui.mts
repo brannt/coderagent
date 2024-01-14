@@ -15,7 +15,7 @@ export default class ExtensionUI {
 
   constructor(storagePath: vscode.Uri) {
     this.storagePath = storagePath;
-    this.docManager = new DocumentationManager(new DocumentationStore(storagePath));
+    this.docManager = new DocumentationManager(new DocumentationStore(storagePath.fsPath));
     this.gptIntegration = new GPTIntegration();
   }
 

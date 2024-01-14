@@ -15,10 +15,11 @@ export function showDebugUI(context: vscode.ExtensionContext) {
     { enableScripts: true }
   );
   panel.webview.html = getWebviewContent();
-  const docStore = new DocumentationStore(context.globalStorageUri);
+  const docStore = new DocumentationStore(context.globalStorageUri.fsPath);
   docStore.load();
   panel.webview.onDidReceiveMessage(
     async (message) => {
+
       let result = "";
       let progressMessage = "";
       let progressFunction = async () => {};
@@ -26,6 +27,7 @@ export function showDebugUI(context: vscode.ExtensionContext) {
         location: vscode.ProgressLocation.Notification,
         cancellable: false,
       };
+
       switch (message.command) {
         case "runSplitter":
           progressMessage = `Running splitter with language ${message.language} and chunk size ${message.chunkSize} and chunk overlap ${message.chunkOverlap}`;
