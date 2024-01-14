@@ -1,11 +1,7 @@
 import { Document } from "langchain/document";
-import { createRequire } from "module";
 import { DocumentationStore } from "./documentationStore.mjs";
+import vscode from "./requireVscode.mjs";
 import { DirectorySource } from "./sources/directory.mjs";
-
-const require = createRequire(import.meta.url);
-
-import vscode = require("vscode");
 
 export function showDebugUI(context: vscode.ExtensionContext) {
   const panel = vscode.window.createWebviewPanel(

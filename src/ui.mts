@@ -1,21 +1,18 @@
 // This module would contain logic to create and manage the UI components of the extension
 
-import { createRequire } from "module";
 
 import { DocumentationManager } from "./documentationManager.mjs";
-import { DocumentationStore } from "./documentationStore.mjs";
 import { GPTIntegration } from "./gptIntegration.mjs";
-const require = createRequire(import.meta.url);
-import vscode = require("vscode");
+import vscode from "./requireVscode.mjs";
 
 export default class ExtensionUI {
   storagePath: vscode.Uri;
   docManager: DocumentationManager;
   gptIntegration: GPTIntegration;
 
-  constructor(storagePath: vscode.Uri) {
+  constructor(storagePath: vscode.Uri, memento: vscode.Memento) {
     this.storagePath = storagePath;
-    this.docManager = new DocumentationManager(new DocumentationStore(storagePath.fsPath));
+    this.docManager = new DocumentationManager(storagePath.fsPath, memento);
     this.gptIntegration = new GPTIntegration();
   }
 
@@ -25,7 +22,7 @@ export default class ExtensionUI {
     } catch (e) {
       await vscode.workspace.fs.createDirectory(this.storagePath);
     }
-    await this.docManager.loadSavedDatabase();
+    await this.docManager.loadSavedSources();
   }
 
   async addDocumentationSource(): Promise<void> {
@@ -34,25 +31,54 @@ export default class ExtensionUI {
       "PDF",
       "Website",
     ]);
-    const path = await vscode.window.showInputBox({
+    const sourcePath = await vscode.window.showInputBox({
       prompt: "Enter the path to the documentation source",
       value: ''
     });
-    if (!path) {
+    if (!sourcePath) {
+      return;
+    }
+    const sourceName = await vscode.window.showInputBox({
+      prompt: "Enter the documentation source name",
+      value: ''
+    });
+    if (!sourceName) {
       return;
     }
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: "Indexing documentation source",
+        title: `Indexing documentation source ${sourceName}`,
         cancellable: false,
       },
       async (progress) => {
-        await this.docManager.addSource(sourceType, path);
+        await this.docManager.addSource(sourceName, sourceType, sourcePath);
       }
     );
     await vscode.window.showInformationMessage(
-        "Documentation source added successfully"
+        `Documentation source ${sourceName} added successfully`
+    );
+  }
+
+  async deleteDocumentationSource(): Promise<void> {
+    const sourceName = await vscode.window.showQuickPick(
+      this.docManager.listSources()
+    );
+    if (!sourceName) {
+      return;
+    }
+    vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Notification,
+        title: `Deleting documentation source ${sourceName}`,
+        cancellable: false,
+      },
+      async (progress) => {
+        await this.docManager.deleteDocumentationSource(sourceName);
+      }
+    );
+    await vscode.window.showInformationMessage(
+      `Documentation source ${sourceName} deleted successfully`
     );
   }
 

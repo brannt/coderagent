@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import * as vscode from "vscode";
-// import { GPTIntegration } from "./gptIntegration.js";
 
 export async function activate(context: vscode.ExtensionContext) {
    const setOpenAIKey = async () => {
@@ -24,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
   }
   
   const ExtensionUI = (await import("./ui.mjs")).default;
-  const extensionUI = new ExtensionUI(context.globalStorageUri);
+  const extensionUI = new ExtensionUI(context.globalStorageUri, context.globalState);
   await extensionUI.postInit();
   const debugUI = await import("./debugUI.mjs");
 
@@ -32,12 +31,12 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("coderagent.addDocumentationSource", () => {
       extensionUI.addDocumentationSource();
     }),
-    // vscode.commands.registerCommand(
-    //   "coderagent.deleteDocumentationSource",
-    //   () => {
-    //     extensionUI.deleteDocumentationSource();
-    //   }
-    // ),
+    vscode.commands.registerCommand(
+      "coderagent.deleteDocumentationSource",
+      () => {
+        extensionUI.deleteDocumentationSource();
+      }
+    ),
     vscode.commands.registerCommand("coderagent.generateCode", () => {
       console.log("generateCode");
       extensionUI.generateCode();

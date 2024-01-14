@@ -48,4 +48,8 @@ export class DocumentationStore {
   async load(): Promise<void> {
     this.vecStore = await this.vecStoreClass.load(this.storagePath, this.embeddings);
   }
+
+  getStoragePath(): string {
+    return this.storagePath;
+  }
 }

@@ -5,7 +5,26 @@ import 'dotenv/config';
 import * as vscode from "vscode";
 // import * as myExtension from '../../extension';
 
+class MockMemento implements vscode.Memento {
+  private storage: { [key: string]: any } = {};
+
+  get<T>(key: string): T | undefined {
+    return this.storage[key];
+  }
+
+  update(key: string, value: any): Thenable<void> {
+    this.storage[key] = value;
+    return Promise.resolve();
+  }
+
+  keys(): readonly string[] {
+    return Object.keys(this.storage);
+  }
+}
 suite("Extension Test Suite", async () => {
+  const { DocumentationManager } = await import(
+    "../../documentationManager.mjs"
+  );
   vscode.window.showInformationMessage("Start all tests.");
 
   test("Sample test", () => {
@@ -20,19 +39,14 @@ suite("Extension Test Suite", async () => {
   // Then, we need to add a documentation source to the document manager
   // Then, we need to test finding similar documents
   test("Index and retrieval", async () => {
-    const { DocumentationStore } = await import(
-      "../../documentationStore.mjs"
-    );
-    const { DocumentationManager } = await import(
-      "../../documentationManager.mjs"
-    );
-    const docStore = new DocumentationStore("file:///tmp/");
-    const docManager = new DocumentationManager(docStore);
+    const docManager = new DocumentationManager("file:///tmp/", new MockMemento());
     await docManager.addSource(
+      "Test",
       "Directory",
       'src/test/suite/testData'
     );
-    const similarDocs = await docStore.findSimilarDocuments("Hello world");
+    const retriever = docManager.getRetrieverForSource();
+    const similarDocs = await retriever.getRelevantDocuments("Hello world");
     assert.strictEqual(similarDocs.length, 1);
   });
 });
