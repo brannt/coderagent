@@ -16,15 +16,17 @@ export const action: ActionFunction = async ({request}) => {
   switch (actionType) {
     case 'runSplitter':
       return runSplitter(
+        formData.get('source') as unknown as string,
         formData.get('chunk-size') as unknown as number,
         formData.get('chunk-overlap') as unknown as number,
-        formData.get('directory') as unknown as string,
+        formData.get('path') as unknown as string,
       );
     case 'reindex':
       return reindex(
+        formData.get('source') as unknown as string,
         formData.get('chunk-size') as unknown as number,
         formData.get('chunk-overlap') as unknown as number,
-        formData.get('directory') as unknown as string,
+        formData.get('path') as unknown as string,
       );
     case 'runRetrieval':
       return runRetrieval(
@@ -58,7 +60,8 @@ export default function Index() {
         <Form method="post">
           <div className="break-inside-avoid">
             <h2 className="text-lg font-semibold">Splitter</h2>
-            <FormTextInput label="Directory" name="directory" type="text" defaultValue="/home/brannt/workspace/coderagent/data/modal.com" />
+            <FormSelectInput label="source" name="source" type="text" defaultValue="directory" options={['directory', 'pdf', 'website']}/>
+            <FormTextInput label="Path" name="path" type="text" defaultValue="/home/brannt/workspace/coderagent/data/modal.com" />
             <FormTextInput label="Language" name="language" type="text" defaultValue="html" />
             <FormTextInput label="Chunk size" name="chunk-size" type="number" defaultValue="500" />
             <FormTextInput label="Chunk overlap" name="chunk-overlap" type="number" defaultValue="100" />
@@ -96,14 +99,15 @@ export default function Index() {
 }
 
 
-interface TextInputProps {
+interface InputProps {
   label: string;
   name: string;
-  type: string;
+  type?: string;
   defaultValue: string;
+  options?: string[];
 }
 
-function FormTextInput({label, name, type, defaultValue}: TextInputProps) {
+function FormTextInput({label, name, type, defaultValue}: InputProps) {
  return (
     <>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
@@ -112,11 +116,22 @@ function FormTextInput({label, name, type, defaultValue}: TextInputProps) {
   )
 }
 
-function FormTextboxInput({label, name, type, defaultValue}: TextInputProps) {
+function FormTextboxInput({label, name, defaultValue}: InputProps) {
   return (
       <>
         <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
         <textarea id={name} name={name} defaultValue={defaultValue} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-sm p-2"/>
+      </>
+    )
+  }
+
+function FormSelectInput({label, name, defaultValue, options}: InputProps) {
+  return (
+      <>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
+        <select id={name} name={name} defaultValue={defaultValue} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm text-sm p-2">
+          {options.map((option) => <option value={option}>{option}</option>)}
+        </select>
       </>
     )
   }

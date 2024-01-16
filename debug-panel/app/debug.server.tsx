@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { DocumentationStore } from "../../out/documentationStore.mjs";
 import { GPTIntegration } from "../../out/gptIntegration.mjs";
 import { DirectorySource } from "../../out/sources/directory.mjs";
+import { PDFSource } from "../../out/sources/pdf.mjs";
+import { WebsiteSource } from "../../out/sources/website.mjs";
 let _docStore: DocumentationStore
 
 async function getDocStore() {
@@ -15,11 +17,9 @@ async function getDocStore() {
     }
     return _docStore;
 }
-export async function runSplitter(chunkSize: number, chunkOverlap: number, directory: string) {
-    const source = new DirectorySource();
-    source.splitterParams.chunkSize = chunkSize;
-    source.splitterParams.chunkOverlap = chunkOverlap;
-    const docs = await source.load(directory);
+export async function runSplitter(sourceName: string, chunkSize: number, chunkOverlap: number, path: string) {
+    const source = getSourceFromParams(sourceName, chunkSize, chunkOverlap);
+    const docs = await source.load(path);
     const result = docs.map((doc) => doc.pageContent).join("\n\n---\n\n");
     return { result };
 }
@@ -41,11 +41,9 @@ export async function runRetrieval(kValue: number, fetchK: number, searchType: s
       return { result };
 }
 
-export async function reindex(chunkSize: number, chunkOverlap: number, directory: string) {
-    const source = new DirectorySource();
-    source.splitterParams.chunkSize = chunkSize;
-    source.splitterParams.chunkOverlap = chunkOverlap;
-    const docs = await source.load(directory);
+export async function reindex(sourceName: string, chunkSize: number, chunkOverlap: number, path: string) {
+    const source = getSourceFromParams(sourceName, chunkSize, chunkOverlap);
+    const docs = await source.load(path);
     const docStore = await getDocStore();
     await docStore.addDocuments(docs);
     await docStore.save();
@@ -62,4 +60,24 @@ export async function query(query: string, isGenerateCode: boolean) {
         await gpt.answerQuestion(retriever, query);
 
     return { result };
+}
+
+function getSourceFromParams(sourceName: string, chunkSize: number, chunkOverlap: number) {
+    let source;
+    switch (sourceName) {
+        case 'directory':
+            source = new DirectorySource();
+            break;
+        case 'pdf':
+            source = new PDFSource();
+            break;
+        case 'website':
+            source = new WebsiteSource();
+            break;
+        default:
+            throw new Error(`Unknown source: ${sourceName}`);
+    }
+    source.splitterParams.chunkSize = chunkSize;
+    source.splitterParams.chunkOverlap = chunkOverlap;
+    return source;
 }
