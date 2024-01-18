@@ -13,7 +13,7 @@ export class WebsiteSource {
     const compiledConvert = compile({ wordwrap: false });
     const loader = new RecursiveUrlLoader(url, {
       extractor: compiledConvert,
-      maxDepth: 2,
+      maxDepth: 3,
     });
     const docs = await loader.load();
 
