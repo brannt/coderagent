@@ -7,7 +7,7 @@ import { BaseRetriever } from "langchain/schema/retriever";
 import { formatDocumentsAsString } from "langchain/util/document";
 
 const GENERATE_TEMPLATE = `Use the following excerpts from the product documentation to generate the code snippet
-that is requested in the end.
+that is requested in the end. In your answer, provide only the code snippet without any additional text.
 ---------
 {context}`;
 

@@ -83,6 +83,12 @@ export default class ExtensionUI {
   }
 
   async generateCode(): Promise<void> {
+    const sourceName = await vscode.window.showQuickPick(
+      this.docManager.listSources()
+    );
+    if (!sourceName) {
+      return;
+    }
     const question = await vscode.window.showInputBox({
       prompt: "Enter a question to generate code for",
     });
@@ -90,7 +96,7 @@ export default class ExtensionUI {
       return;
     }
     const answer = await this.gptIntegration.generateCode(
-      this.docManager.getRetrieverForSource(),
+      this.docManager.getRetrieverForSource(sourceName),
       question
     );
     const editor = vscode.window.activeTextEditor;
@@ -103,6 +109,12 @@ export default class ExtensionUI {
   }
 
   async answerQuestion(): Promise<void> {
+    const sourceName = await vscode.window.showQuickPick(
+      this.docManager.listSources()
+    );
+    if (!sourceName) {
+      return;
+    }
     const question = await vscode.window.showInputBox({
       prompt: "Enter a question to answer",
     });
@@ -110,7 +122,7 @@ export default class ExtensionUI {
       return;
     }
     const answer = await this.gptIntegration.answerQuestion(
-      this.docManager.getRetrieverForSource(),
+      this.docManager.getRetrieverForSource(sourceName),
       question
     );
     const editor = vscode.window.activeTextEditor;

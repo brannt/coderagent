@@ -3,6 +3,8 @@ import { BaseRetriever } from "langchain/schema/retriever";
 import { DocumentationStore } from "./documentationStore.mjs";
 import vscode from "./requireVscode.mjs";
 import { DirectorySource } from "./sources/directory.mjs";
+import { PDFSource } from "./sources/pdf.mjs";
+import { WebsiteSource } from "./sources/website.mjs";
 
 export class DocumentationManager {
   docStores: Record<string, DocumentationStore>;
@@ -24,17 +26,19 @@ export class DocumentationManager {
     path: string,
     embeddings?: EmbeddingsInterface
   ): Promise<void> {
-    let source = new DirectorySource();
+    let source: DirectorySource | PDFSource | WebsiteSource;
     switch (sourceType) {
       case "Directory":
         source = new DirectorySource();
         break;
       case "PDF":
-        // Logic to index a PDF document
+        source = new PDFSource();
         break;
       case "Website":
-        // Logic to index a website
+        source = new WebsiteSource();
         break;
+      default:
+        throw new Error(`Unknown source type ${sourceType}`);
     }
     console.log("Loading documents");
     const docs = await source.load(path);
@@ -51,8 +55,11 @@ export class DocumentationManager {
     await this.saveSources(false);
   }
 
-  getRetrieverForSource(): BaseRetriever {
-    const store = Object.values(this.docStores)[0];
+  getRetrieverForSource(sourceName: string): BaseRetriever {
+    const store = this.docStores[sourceName];
+    if (!store) {
+      throw new Error(`Documentation source ${sourceName} not found.`);
+    }
     return store.getRetriever();
   }
 

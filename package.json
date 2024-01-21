@@ -28,16 +28,8 @@
                 "title": "CodeRAGent: Answer Question"
             },
             {
-                "command": "coderagent.manageDatabase",
-                "title": "CodeRAGent: Manage Database"
-            },
-            {
                 "command": "coderagent.setOpenAIKey",
                 "title": "CodeRAGent: Set OpenAI Key"
-            },
-            {
-                "command": "coderagent.DEBUG",
-                "title": "CodeRAGent: DEBUG"
             }
         ]
     },

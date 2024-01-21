@@ -93,14 +93,14 @@ export default function Index() {
               label="source"
               name="source"
               type="text"
-              defaultValue="directory"
+              defaultValue="website"
               options={["directory", "pdf", "website"]}
             />
             <FormTextInput
               label="Path"
               name="path"
               type="text"
-              defaultValue="/home/brannt/workspace/coderagent/data/modal.com"
+              defaultValue="https://zig.guide/"
             />
             <FormTextInput
               label="Language"
